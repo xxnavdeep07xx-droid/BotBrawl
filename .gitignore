@@ -1,0 +1,24 @@
+# Top-level ignores — anything that applies to the whole monorepo.
+# Per-phase .gitignore files in phase-1-cli/ and phase-2-web/ handle
+# language-specific junk.
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Secrets — NEVER commit
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# Logs (top-level only — per-phase log dirs have their own .gitkeep)
+*.log

@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+bun.lockb
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Production
+*.tsbuildinfo
+next-env.d.ts
+
+# Local SQLite DB + Prisma generated client (regenerated on install)
+*.db
+*.db-journal
+prisma/migrations/dev/
+
+# Env / secrets — NEVER commit
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# Logs / runtime artifacts
+logs/*
+!logs/.gitkeep
+*.log
+dev.log
+server.log
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Cache
+.cache/
+.eslintcache
+.turbo/
+
+# Test coverage
+coverage/

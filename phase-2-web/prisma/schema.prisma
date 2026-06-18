@@ -1,0 +1,115 @@
+// AI Chess Gladiator — Phase 2 schema
+// Learn more about Prisma: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Users — simplified: one demo user for Phase 2 beta, but the schema is
+// multi-user-ready for when auth lands.
+// ---------------------------------------------------------------------------
+model User {
+  id              String   @id @default(cuid())
+  name            String
+  email           String   @unique
+  computeTokens   Int      @default(1000)
+  lastTokenGrant  DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  bets Bet[]
+}
+
+// ---------------------------------------------------------------------------
+// AI Players — one row per (provider, model, persona) combination.
+// Elo starts at 1200 (chess.com-ish default).
+// ---------------------------------------------------------------------------
+model AIPlayer {
+  id         String  @id @default(cuid())
+  name       String                  // display name e.g. "GPT-4o-mini"
+  provider   String                  // "zai" (single backend in Phase 2)
+  model      String                  // model slug
+  personaKey String                  // persona key from src/lib/personas.ts
+  elo        Int     @default(1200)
+  wins       Int     @default(0)
+  losses     Int     @default(0)
+  draws      Int     @default(0)
+  createdAt  DateTime @default(now())
+
+  matchesAsWhite Match[]   @relation("MatchWhite")
+  matchesAsBlack Match[]   @relation("MatchBlack")
+}
+
+// ---------------------------------------------------------------------------
+// Matches
+// ---------------------------------------------------------------------------
+model Match {
+  id           String    @id @default(cuid())
+  whiteId      String
+  blackId      String
+  status       String    @default("UPCOMING")  // UPCOMING | LIVE | COMPLETED
+  winner       String?                            // "white" | "black" | null (draw)
+  reason       String?                            // why the match ended
+  finalFen     String?
+  pgn          String?                            // full game in PGN
+  plies        Int       @default(0)
+  startedAt    DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime  @default(now())
+
+  white        AIPlayer  @relation("MatchWhite", fields: [whiteId], references: [id])
+  black        AIPlayer  @relation("MatchBlack", fields: [blackId], references: [id])
+  events       MatchEvent[]
+  bets         Bet[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Per-move events — one row per half-move (or special event like resignation)
+// ---------------------------------------------------------------------------
+model MatchEvent {
+  id          String   @id @default(cuid())
+  matchId     String
+  ply         Int                       // 1-indexed half-move number
+  side        String                    // "white" | "black" | ""
+  type        String                    // "match_start" | "move" | "player_resigned" | "player_timeout" | "match_end"
+  san         String?                   // SAN move (if applicable)
+  monologue   String?                   // player's narration
+  retries     Int      @default(0)
+  apiErrors   Int      @default(0)
+  elapsedMs   Int      @default(0)
+  timestamp   DateTime @default(now())
+
+  match       Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@index([matchId, ply])
+}
+
+// ---------------------------------------------------------------------------
+// Bets — users wager Compute Tokens on which AI will win
+// ---------------------------------------------------------------------------
+model Bet {
+  id        String   @id @default(cuid())
+  userId    String
+  matchId   String
+  side      String                           // "white" | "black"
+  amount    Int                              // tokens wagered
+  payout    Int?                             // tokens returned (null until settled)
+  status    String   @default("PENDING")    // PENDING | WON | LOST | DRAWN | REFUNDED
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  match     Match    @relation(fields: [matchId], references: [id])
+
+  @@index([userId])
+  @@index([matchId])
+  @@index([status])
+}

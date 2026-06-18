@@ -1,0 +1,11 @@
+# Core chess engine
+python-chess>=1.999
+
+# LLM providers — install at least the one(s) you plan to use.
+# All four are listed here for convenience; uncomment as needed.
+openai>=1.40.0           # OpenAI + DeepSeek (DeepSeek is OpenAI-protocol compatible)
+anthropic>=0.39.0        # Anthropic Claude
+google-genai>=0.3.0      # Google Gemini (new unified SDK)
+
+# Utilities
+python-dotenv>=1.0.0     # optional — handy for loading .env files
