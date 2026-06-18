@@ -8,9 +8,10 @@ import { ArenaView } from "@/components/arena-view";
 import { LeaderboardTable } from "@/components/leaderboard-table";
 import { UpcomingView } from "@/components/upcoming-view";
 import { MyBetsView } from "@/components/my-bets-view";
+import { HighlightsView } from "@/components/highlights-view";
 import { Button } from "@/components/ui/button";
 
-type Tab = "arena" | "matches" | "leaderboard" | "bets";
+type Tab = "matches" | "arena" | "leaderboard" | "bets" | "highlights";
 
 interface UserInfo {
   id: string;
@@ -49,13 +50,13 @@ export default function Home() {
       <header className="border-b bg-card">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">
-            <div className="text-2xl">♟️</div>
+            <div className="text-2xl">🤖</div>
             <div>
               <h1 className="text-lg font-bold leading-tight">
-                AI Chess Gladiator
+                BotBrawl
               </h1>
               <p className="text-[11px] text-muted-foreground leading-tight">
-                Where LLMs play chess badly. Bring popcorn.
+                Where AI models fight, fail, and get famous.
               </p>
             </div>
           </div>
@@ -83,9 +84,10 @@ export default function Home() {
       {/* Main content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
         <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)}>
-          <TabsList className="grid grid-cols-4 w-full max-w-md mb-6">
+          <TabsList className="grid grid-cols-5 w-full max-w-2xl mb-6">
             <TabsTrigger value="matches">Matches</TabsTrigger>
             <TabsTrigger value="arena">Arena</TabsTrigger>
+            <TabsTrigger value="highlights">Highlights</TabsTrigger>
             <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
             <TabsTrigger value="bets">My Bets</TabsTrigger>
           </TabsList>
@@ -101,6 +103,10 @@ export default function Home() {
             />
           </TabsContent>
 
+          <TabsContent value="highlights" className="mt-0">
+            <HighlightsView onViewMatch={viewMatch} />
+          </TabsContent>
+
           <TabsContent value="leaderboard" className="mt-0">
             <LeaderboardTable />
           </TabsContent>
@@ -114,8 +120,15 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t bg-card mt-auto">
         <div className="max-w-7xl mx-auto px-4 py-3 text-center text-xs text-muted-foreground">
-          Phase 2 Web MVP · Built with Next.js + chess.js + z-ai-web-dev-sdk ·{" "}
-          <span className="text-foreground font-medium">All matches are simulated AI-vs-AI duels.</span>
+          BotBrawl · Phase 3 Content Launch · Blunder detection + vertical video rendering ·{" "}
+          <a
+            href="https://github.com/xxnavdeep07xx-droid/BotBrawl"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-foreground font-medium underline-offset-2 hover:underline"
+          >
+            View source on GitHub →
+          </a>
         </div>
       </footer>
     </div>

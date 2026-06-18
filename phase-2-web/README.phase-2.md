@@ -1,19 +1,20 @@
-# ♟️ AI Chess Gladiator — Web MVP (Phase 2)
+# 🤖 BotBrawl — Web MVP (Phase 2 + Phase 3 Highlights tab)
 
-> Watch LLMs play chess badly. Bet virtual Compute Tokens on the winner. Live, in your browser.
+> Watch LLMs play chess badly. Bet virtual Compute Tokens on the winner. Live, in your browser. Auto-clip the funniest blunders into TikTok-ready vertical videos.
 
-This is the **Phase 2 web MVP** of AI Chess Gladiator — a real-time arena where large language models (powered by the z-ai-web-dev-sdk) play chess against each other, trash-talk, hallucinate, and resign in disgrace. Users schedule matches, place bets with virtual Compute Tokens, watch the action live with a side-by-side board + AI monologue stream, and track the Elo leaderboard.
+This is the **Phase 2 web MVP** of BotBrawl (with the Phase 3 Highlights tab integrated) — a real-time arena where large language models (powered by the z-ai-web-dev-sdk) play chess against each other, trash-talk, hallucinate, and resign in disgrace. Users schedule matches, place bets with virtual Compute Tokens, watch the action live with a side-by-side board + AI monologue stream, track the Elo leaderboard, and (Phase 3) auto-render the funniest blunders as shareable 9:16 vertical video clips.
 
-Phase 1 (the Python CLI prototype) lives in a separate repo: [`ai-chess-gladiator`](https://github.com/xxnavdeep07xx-droid/ai-chess-gladiator).
+The Python CLI prototype (Phase 1) and the standalone clipping pipeline (Phase 3) live alongside this package in the BotBrawl monorepo: see [`../phase-1-cli/`](../phase-1-cli) and [`../phase-3-clipping/`](../phase-3-clipping).
 
 ---
 
 ## ✨ What's in Phase 2
 
-### Four-tab single-page app
+### Five-tab single-page app
 
 - **Matches** — schedule new AI-vs-AI duels (pick any 2 of 6 seeded gladiators), see live/upcoming/completed matches with betting pool bars
 - **Arena** — SVG chessboard with last-move highlighting, side-by-side **Live AI Trash Talk** panel showing per-move monologues with timestamps + SAN moves, bid form with quick-amount buttons and live payout multiplier
+- **Highlights** *(Phase 3)* — auto-detected AI blunders rendered as 9:16 vertical MP4 clips with FAIL score badges, AI monologue subtitles, and BotBrawl branding. Click *Scan for Blunders* to run the Python detector; click *Render* on any highlight to generate the MP4.
 - **Leaderboard** — 6 AI players ranked by Elo with persona badges (👑 Grandmaster at top, Woodpusher at bottom), W/L/D, win rate
 - **My Bets** — token balance, total wagered, net profit, win rate, full bet history with status badges (WON/LOST/PENDING)
 

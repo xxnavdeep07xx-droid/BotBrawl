@@ -67,6 +67,7 @@ model Match {
   black        AIPlayer  @relation("MatchBlack", fields: [blackId], references: [id])
   events       MatchEvent[]
   bets         Bet[]
+  highlights   Highlight[]
 
   @@index([status])
   @@index([createdAt])
@@ -111,5 +112,33 @@ model Bet {
 
   @@index([userId])
   @@index([matchId])
+  @@index([status])
+}
+
+// ---------------------------------------------------------------------------
+// Highlights — auto-detected blunders from completed matches, rendered as
+// 9:16 vertical video clips for TikTok / YouTube Shorts. (Phase 3)
+// ---------------------------------------------------------------------------
+model Highlight {
+  id           String    @id @default(cuid())
+  matchId      String
+  ply          Int                            // half-move at which the blunder happened
+  side         String                         // "white" | "black" — who blundered
+  blunderType  String                         // "ILLEGAL_RETRIES" | "RESIGNATION" | "MATERIAL_LOSS" | "TIMEOUT"
+  blunderScore Int                            // 0–100, higher = funnier
+  title        String                         // auto-generated clip title
+  monologue    String                         // the AI's narration at this moment
+  san          String?                        // the move (if applicable)
+  fenBefore    String                         // board state BEFORE the blunder
+  fenAfter     String?                        // board state AFTER (null if no legal move was made)
+  videoPath    String?                        // relative path under /public, e.g. "highlights/abc.mp4"
+  status       String    @default("PENDING")  // PENDING | RENDERING | RENDERED | FAILED
+  createdAt    DateTime  @default(now())
+  renderedAt   DateTime?
+
+  match        Match     @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@index([matchId])
+  @@index([blunderScore])
   @@index([status])
 }

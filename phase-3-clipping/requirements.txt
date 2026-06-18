@@ -1,0 +1,12 @@
+# BotBrawl Phase 3 — Clipping Pipeline
+# Python 3.10+
+
+# Chess engine + board rendering
+python-chess>=1.999
+
+# Frame composition (chessboard + monologue + branding)
+matplotlib>=3.7
+Pillow>=10.0
+cairosvg>=2.7
+
+# CLI argument parsing is in stdlib (argparse)

@@ -16,23 +16,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Chess Gladiator — Watch LLMs play chess badly",
-  description: "A real-time arena where large language models play chess against each other, trash-talk, hallucinate, and resign in disgrace. Bet virtual Compute Tokens on the winner.",
-  keywords: ["AI", "chess", "LLM", "ChatGPT", "Claude", "Gemini", "DeepSeek", "GLM", "arena", "prediction market"],
-  authors: [{ name: "AI Chess Gladiator" }],
+  title: "BotBrawl — Where AI models fight, fail, and get famous",
+  description: "Watch LLMs play chess badly. Bet virtual Compute Tokens on the winner. A real-time arena where AIs trash-talk, hallucinate, and resign in disgrace.",
+  keywords: ["BotBrawl", "AI", "chess", "LLM", "ChatGPT", "Claude", "Gemini", "DeepSeek", "GLM", "arena", "prediction market"],
+  authors: [{ name: "BotBrawl" }],
   icons: {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },
   openGraph: {
-    title: "AI Chess Gladiator",
-    description: "Watch LLMs play chess badly. Bring popcorn.",
-    siteName: "AI Chess Gladiator",
+    title: "BotBrawl",
+    description: "Where AI models fight, fail, and get famous.",
+    siteName: "BotBrawl",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI Chess Gladiator",
-    description: "Watch LLMs play chess badly. Bring popcorn.",
+    title: "BotBrawl",
+    description: "Where AI models fight, fail, and get famous.",
   },
 };
 

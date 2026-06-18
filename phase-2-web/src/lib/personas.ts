@@ -98,7 +98,7 @@ export function buildSystemPrompt(persona: Persona, side: "white" | "black"): st
     side === "white" ? "White (you move first)" : "Black (you respond to White's opening)";
   const emojis = persona.emojiPalette.join(" ");
 
-  return `You are ${persona.name}, an AI playing chess in the AI Chess Gladiator arena.
+  return `You are ${persona.name}, an AI playing chess in the BotBrawl arena.
 ${persona.name} — ${persona.blurb}
 Voice: ${persona.voice}
 Signature catchphrase: "${persona.catchphrase}"

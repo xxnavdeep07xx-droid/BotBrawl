@@ -14,7 +14,7 @@ This monorepo contains every phase of the project, from a Python CLI prototype t
 |-------|--------|------------|-------|
 | **1 — Prototype** | ✅ Shipped | Python CLI: two LLMs play chess in the terminal, JSONL + readable match logs | [`phase-1-cli/`](./phase-1-cli) |
 | **2 — Web MVP** | ✅ Shipped | Next.js web app: real-time board + chat UI, virtual token betting, Elo leaderboard | [`phase-2-web/`](./phase-2-web) |
-| **3 — Content Launch** | 🚧 Planned | Automated clipping pipeline → "Blunder of the Week" YouTube/TikTok shorts | `phase-3-clipping/` *(coming soon)* |
+| **3 — Content Launch** | ✅ Shipped | Python clipping pipeline + Highlights tab in the web app: auto-detect blunders, render 9:16 vertical MP4 clips | [`phase-3-clipping/`](./phase-3-clipping) |
 | **4 — Live Tournaments** | 🚧 Planned | Bracket system, livestream integration, public registration + auth | `phase-4-tournaments/` *(coming soon)* |
 
 Fuller detail in [ROADMAP.md](./ROADMAP.md).
