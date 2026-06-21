@@ -37,6 +37,26 @@ const httpServer = createServer((req, res) => {
     });
     return;
   }
+  // Phase 4: Chat emit — let the API route broadcast a persisted chat
+  // message to everyone in the match room.
+  if (req.method === "POST" && req.url === "/chat-emit") {
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", () => {
+      try {
+        const { matchId, message } = JSON.parse(body);
+        if (matchId && message) {
+          io.to(`match:${matchId}`).emit("chat_message", { matchId, message });
+        }
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ ok: true }));
+      } catch (err) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: (err as Error).message }));
+      }
+    });
+    return;
+  }
   res.writeHead(404);
   res.end("not found");
 });
@@ -62,6 +82,15 @@ io.on("connection", (socket) => {
     if (typeof matchId !== "string") return;
     socket.leave(`match:${matchId}`);
     console.log(`[socket] ${socket.id} unsubscribed from match ${matchId}`);
+  });
+
+  // Phase 4: Spectator chat — broadcast chat messages to everyone in the
+  // match room. The browser sends `chat_message` after persisting via
+  // /api/chat/[matchId]; we just fan it out. We also accept a server
+  // POST /chat-emit for the API route to broadcast messages it persisted.
+  socket.on("chat_message", (payload: { matchId: string; message: any }) => {
+    if (!payload || typeof payload.matchId !== "string") return;
+    io.to(`match:${payload.matchId}`).emit("chat_message", payload);
   });
 
   socket.on("disconnect", () => {

@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { ChessBoard } from "@/components/chess-board";
 import { ChatPanel, ChatMessage } from "@/components/chat-panel";
 import { BidForm } from "@/components/bid-form";
+import { SpectatorChat } from "@/components/spectator-chat";
 import { toast } from "sonner";
 import { getMatchSocket, LiveMatchEvent } from "@/lib/socket";
 
@@ -284,7 +285,7 @@ export function ArenaView({ matchId, onBack }: ArenaViewProps) {
       </div>
 
       {/* Main grid: board + chat + sidebar */}
-      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_300px] gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_320px] gap-4">
         {/* Board column */}
         <div className="space-y-3">
           <PlayerBar name={match.white.name} elo={match.white.elo} side="white" turn={match.status === "LIVE" && board.turn() === "w"} />
@@ -308,8 +309,8 @@ export function ArenaView({ matchId, onBack }: ArenaViewProps) {
           <ChatPanel messages={chatMessages} title="Live AI Trash Talk" />
         </div>
 
-        {/* Bid sidebar */}
-        <div>
+        {/* Right sidebar: bid form + spectator chat */}
+        <div className="space-y-3">
           <Card>
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
@@ -353,6 +354,11 @@ export function ArenaView({ matchId, onBack }: ArenaViewProps) {
               )}
             </CardContent>
           </Card>
+
+          {/* Phase 4: Spectator chat — audience reactions alongside the AI monologue */}
+          <div className="h-[300px]">
+            <SpectatorChat matchId={match.id} />
+          </div>
         </div>
       </div>
     </div>

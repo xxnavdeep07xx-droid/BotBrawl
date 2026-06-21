@@ -24,6 +24,7 @@ model User {
   updatedAt       DateTime @updatedAt
 
   bets Bet[]
+  chatMessages ChatMessage[]
 }
 
 // ---------------------------------------------------------------------------
@@ -44,6 +45,7 @@ model AIPlayer {
 
   matchesAsWhite Match[]   @relation("MatchWhite")
   matchesAsBlack Match[]   @relation("MatchBlack")
+  tournamentSlots TournamentSlot[]
 }
 
 // ---------------------------------------------------------------------------
@@ -68,6 +70,8 @@ model Match {
   events       MatchEvent[]
   bets         Bet[]
   highlights   Highlight[]
+  chatMessages ChatMessage[]
+  tournamentMatches TournamentMatch[]
 
   @@index([status])
   @@index([createdAt])
@@ -141,4 +145,87 @@ model Highlight {
   @@index([matchId])
   @@index([blunderScore])
   @@index([status])
+}
+
+// ---------------------------------------------------------------------------
+// Tournaments — bracket-style AI competitions. (Phase 4)
+//
+// A Tournament has N rounds (log2(size) for single-elim). Each round has
+// size/2^round matches. The winner of each match advances to the next round
+// as white or black in their next match.
+// ---------------------------------------------------------------------------
+model Tournament {
+  id           String   @id @default(cuid())
+  name         String
+  format       String   @default("SINGLE_ELIM")  // SINGLE_ELIM (only one supported in v1)
+  size         Int      @default(4)              // 4 | 8 (16 possible but UI not optimized for it)
+  status       String   @default("UPCOMING")     // UPCOMING | ACTIVE | COMPLETED
+  currentRound Int      @default(0)              // 0-indexed
+  winnerId     String?                            // AIPlayer id of tournament champion
+  startedAt    DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime @default(now())
+
+  slots       TournamentSlot[]
+  matches     TournamentMatch[]
+
+  @@index([status])
+}
+
+// One slot per AI player in the tournament. Seeded at creation time.
+model TournamentSlot {
+  id            String    @id @default(cuid())
+  tournamentId  String
+  seed          Int                              // 1-indexed seed (1 = highest Elo)
+  playerId      String                           // AIPlayer id
+  eliminated    Boolean   @default(false)
+  eliminatedIn  Int?                             // round number when eliminated
+
+  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  player        AIPlayer   @relation(fields: [playerId], references: [id])
+  whiteInMatches  TournamentMatch[] @relation("TournamentMatchWhiteSlot")
+  blackInMatches  TournamentMatch[] @relation("TournamentMatchBlackSlot")
+  winnerInMatches  TournamentMatch[] @relation("TournamentMatchWinnerSlot")
+
+  @@unique([tournamentId, seed])
+  @@index([tournamentId])
+}
+
+// A single match in a tournament bracket. The first round is seeded at
+// tournament start; subsequent rounds are filled in as winners advance.
+model TournamentMatch {
+  id            String    @id @default(cuid())
+  tournamentId  String
+  round         Int                                // 0-indexed round
+  bracketIndex  Int                                // position within the round (0..size/2^(round+1)-1)
+  matchId       String?                            // linked Match when scheduled
+  whiteSlotId   String?                            // TournamentSlot
+  blackSlotId   String?
+  winnerSlotId  String?
+  status        String    @default("PENDING")     // PENDING | READY | LIVE | COMPLETED
+
+  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  match         Match?     @relation(fields: [matchId], references: [id])
+  whiteSlot     TournamentSlot? @relation("TournamentMatchWhiteSlot", fields: [whiteSlotId], references: [id])
+  blackSlot     TournamentSlot? @relation("TournamentMatchBlackSlot", fields: [blackSlotId], references: [id])
+  winnerSlot    TournamentSlot? @relation("TournamentMatchWinnerSlot", fields: [winnerSlotId], references: [id])
+
+  @@unique([tournamentId, round, bracketIndex])
+  @@index([tournamentId, round])
+}
+
+// ---------------------------------------------------------------------------
+// Chat messages — spectator chat for live matches. (Phase 4)
+// ---------------------------------------------------------------------------
+model ChatMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  matchId   String                            // which match's chat (no tournament-level chat in v1)
+  content   String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  match     Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@index([matchId, createdAt])
 }

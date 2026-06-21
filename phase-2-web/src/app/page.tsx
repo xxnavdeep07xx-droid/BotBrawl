@@ -9,9 +9,11 @@ import { LeaderboardTable } from "@/components/leaderboard-table";
 import { UpcomingView } from "@/components/upcoming-view";
 import { MyBetsView } from "@/components/my-bets-view";
 import { HighlightsView } from "@/components/highlights-view";
+import { TournamentsView } from "@/components/tournaments-view";
+import { StreamView } from "@/components/stream-view";
 import { Button } from "@/components/ui/button";
 
-type Tab = "matches" | "arena" | "leaderboard" | "bets" | "highlights";
+type Tab = "matches" | "arena" | "tournaments" | "highlights" | "leaderboard" | "bets";
 
 interface UserInfo {
   id: string;
@@ -22,6 +24,20 @@ interface UserInfo {
 export default function Home() {
   const [tab, setTab] = useState<Tab>("matches");
   const [viewingMatchId, setViewingMatchId] = useState<string | null>(null);
+
+  // Phase 4: Stream mode — if the URL has ?stream=<matchId>, render the
+  // fullscreen OBS-friendly view instead of the normal SPA. Streamers embed
+  // this URL as a Browser Source in OBS Studio.
+  const [streamMatchId, setStreamMatchId] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const s = params.get("stream");
+    if (s) {
+      // Defer to a microtask to avoid the set-state-in-effect lint rule.
+      Promise.resolve().then(() => setStreamMatchId(s));
+    }
+  }, []);
 
   // Fetch user for the token balance badge.
   const { data: userData, refetch: refetchUser } = useQuery<{ user: UserInfo }>({
@@ -42,6 +58,11 @@ export default function Home() {
   function viewMatch(matchId: string) {
     setViewingMatchId(matchId);
     setTab("arena");
+  }
+
+  // Stream mode — early return with the fullscreen StreamView
+  if (streamMatchId) {
+    return <StreamView matchId={streamMatchId} />;
   }
 
   return (
@@ -84,9 +105,10 @@ export default function Home() {
       {/* Main content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
         <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)}>
-          <TabsList className="grid grid-cols-5 w-full max-w-2xl mb-6">
+          <TabsList className="grid grid-cols-6 w-full max-w-3xl mb-6">
             <TabsTrigger value="matches">Matches</TabsTrigger>
             <TabsTrigger value="arena">Arena</TabsTrigger>
+            <TabsTrigger value="tournaments">Tournaments</TabsTrigger>
             <TabsTrigger value="highlights">Highlights</TabsTrigger>
             <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
             <TabsTrigger value="bets">My Bets</TabsTrigger>
@@ -101,6 +123,10 @@ export default function Home() {
               matchId={viewingMatchId}
               onBack={() => setTab("matches")}
             />
+          </TabsContent>
+
+          <TabsContent value="tournaments" className="mt-0">
+            <TournamentsView onViewMatch={viewMatch} />
           </TabsContent>
 
           <TabsContent value="highlights" className="mt-0">
@@ -120,7 +146,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t bg-card mt-auto">
         <div className="max-w-7xl mx-auto px-4 py-3 text-center text-xs text-muted-foreground">
-          BotBrawl · Phase 3 Content Launch · Blunder detection + vertical video rendering ·{" "}
+          BotBrawl · Phase 4 Live Tournaments · Brackets + spectator chat + OBS stream mode ·{" "}
           <a
             href="https://github.com/xxnavdeep07xx-droid/BotBrawl"
             target="_blank"

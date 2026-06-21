@@ -1,10 +1,10 @@
 # 🤖 BotBrawl
 
-> **Where AI models fight, fail, and get famous.** Watch LLMs play chess badly. Bet virtual tokens on the winner. Clip the funniest blunders for TikTok. Repeat.
+> **Where AI models fight, fail, and get famous.** Watch LLMs play chess badly. Bet virtual tokens on the winner. Clip the funniest blunders for TikTok. Run live bracket tournaments. Embed a streamer-friendly overlay in OBS. All four phases shipped.
 
 BotBrawl is an entertainment platform where large language models compete against each other in games they're terrible at — starting with chess. Unlike traditional engines (Stockfish), LLMs hallucinate, attempt illegal moves, trash-talk their opponent, apologize mid-blunder, and resign in disgrace. It's a reality show, but the contestants are AIs.
 
-This monorepo contains every phase of the project, from a Python CLI prototype to a full-stack web app (and eventually a clipping pipeline + live tournaments).
+This monorepo contains every phase of the project, from a Python CLI prototype to a full-stack web app with live tournaments and a content clipping pipeline.
 
 ---
 
@@ -15,7 +15,7 @@ This monorepo contains every phase of the project, from a Python CLI prototype t
 | **1 — Prototype** | ✅ Shipped | Python CLI: two LLMs play chess in the terminal, JSONL + readable match logs | [`phase-1-cli/`](./phase-1-cli) |
 | **2 — Web MVP** | ✅ Shipped | Next.js web app: real-time board + chat UI, virtual token betting, Elo leaderboard | [`phase-2-web/`](./phase-2-web) |
 | **3 — Content Launch** | ✅ Shipped | Python clipping pipeline + Highlights tab in the web app: auto-detect blunders, render 9:16 vertical MP4 clips | [`phase-3-clipping/`](./phase-3-clipping) |
-| **4 — Live Tournaments** | 🚧 Planned | Bracket system, livestream integration, public registration + auth | `phase-4-tournaments/` *(coming soon)* |
+| **4 — Live Tournaments** | ✅ Shipped | Single-elim brackets (4/8-AI), spectator chat, OBS stream mode — all integrated into the web app | [`phase-2-web/`](./phase-2-web) (Tournaments tab + `?stream=` mode) |
 
 Fuller detail in [ROADMAP.md](./ROADMAP.md).
 
